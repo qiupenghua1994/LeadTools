@@ -1,0 +1,298 @@
+.align-left {
+   text-align: left;
+}
+
+.ann-media {
+   margin-bottom: 30px;
+   width: 100%;
+}
+
+.ann-dlg-property input {
+   margin-bottom: 0;
+}
+
+.ann-dlg-property + .ann-dlg-property {
+   margin-top: 12px;
+}
+
+ul.dlg-tabs {
+   font-size: 0;
+   margin: 0;
+   padding: 0;
+   list-style-type: none;
+   text-align: center;
+   margin-bottom: 20px;
+   font-family: "Questrial", sans-serif;
+   white-space: nowrap;
+   overflow-x: auto;
+}
+
+   ul.dlg-tabs > li {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      font-size: 13px;
+      text-transform: uppercase;
+      display: inline-block;
+      cursor: pointer;
+      border: 3px solid #5a667e;
+      border-radius: 3px;
+      padding: 10px 5px;
+      color: #5a667e;
+      background: none;
+      letter-spacing: 1px;
+      transition: background 150ms cubic-bezier(0.450, 0.000, 0.000, 1.000);
+   }
+
+      ul.dlg-tabs > li:hover, ul.dlg-tabs > li.selected {
+         cursor: pointer;
+         background: #5a667e;
+         color: white;
+      }
+
+      ul.dlg-tabs > li:first-child {
+         margin: 0;
+      }
+
+   /* Specifically for the properties page */
+   ul.dlg-tabs.dlg-tabs-props > li {
+      border-color: #d7e6eb;
+      color: #5a667e;
+   }
+
+      ul.dlg-tabs.dlg-tabs-props > li:hover, ul.dlg-tabs.dlg-tabs-props > li.selected {
+         cursor: pointer;
+         background: #d7e6eb;
+         /*color: white;*/
+      }
+
+.dlg-tabview-props {
+   margin-top: 30px;
+}
+
+.dlg-tabs-1 > li {
+   min-width: 100%;
+   margin: 0;
+}
+
+.dlg-tabs-2 > li {
+   min-width: calc((100% - (30px * 1)) / 2);
+   margin-left: 30px;
+}
+
+.dlg-tabs-3 > li {
+   min-width: calc((100% - (30px * 2)) / 3);
+   margin-left: 30px;
+}
+
+.dlg-tabs-4 > li {
+   min-width: calc((100% - (25px * 3)) / 4);
+   margin-left: 25px;
+}
+
+.dlg-tabs-plus > li {
+   min-width: calc((100% - (20px * 4)) / 5);
+   margin-left: 20px;
+}
+
+.dlg-tabview > div:not(.selected) {
+   display: none;
+}
+
+/*/////////// Dialog Collapsible in Annotations Demo ///////////*/
+.collapse-container {
+   position: relative;
+   margin-bottom: 15px;
+   border-radius: 3px;
+   overflow: hidden;
+}
+
+.collapse-header {
+   border: 2px solid #d7e6eb;
+   background-color: white;
+   color: #5a667e;
+   text-transform: uppercase;
+   font-size: 13px;
+   text-align: center;
+   padding: 11px 0;
+   cursor: pointer;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+   position: relative;
+}
+
+.collapse-container.open .collapse-header {
+   background-color: #d7e6eb;
+   /*color: white;*/
+}
+
+.collapse-indicator {
+   position: absolute;
+   height: 30px;
+   width: 30px;
+   top: 0;
+   left: 0;
+   font-size: 35px;
+   line-height: 41px;
+   height: 44px;
+   padding-left: 10px;
+}
+
+.collapse-header-text {
+   font-family: "Questrial", sans-serif;
+   margin: 0;
+   padding: 0;
+   letter-spacing: 1px;
+}
+
+.collapse-height {
+   transition: max-height .6s ease;
+   max-height: 0;
+   overflow: hidden;
+}
+
+.collapse-container.open .collapse-height {
+   max-height: 800px;
+}
+
+.collapse-transform {
+   transition: transform .4s ease;
+   transform: translateY(-100%);
+   border: 2px solid #d7e6eb;
+   border-top: none;
+   padding: 10px;
+}
+
+.collapse-container.open .collapse-transform {
+   transform: translateY(0);
+}
+/*/////////// END Dialog Collapsible in Annotations Demo ///////////*/
+
+.content-textarea {
+   width: 100%;
+   resize: none;
+   border: 2px solid #5a667e;
+   border-radius: 3px;
+}
+
+/*/////////// Dialog Annotations Review Tree ///////////*/
+
+.ann-tree h3 {
+   color: #5a667e;
+   font-family: 'Open Sans';
+   letter-spacing: 0;
+}
+
+.ann-tree input, .ann-tree h3, .ann-tree-textarea, .ann-tree .dropdown {
+   margin: 20px 0 0 0;
+}
+
+.ann-tree label:not(.custom-check) {
+   margin-bottom: 0;
+   padding-top: 5px;
+   padding-bottom: 5px;
+}
+
+.ann-tree .input-label {
+   margin: 22px 0 0 0;
+   padding-bottom: 3px;
+}
+
+.ann-tree .custom-check {
+   margin-bottom: 0;
+}
+
+.ann-tree-textarea {
+   width: 100%;
+   border: 2px solid #d7e6eb;
+   border-radius: 3px;
+   background-color: white;
+   resize: none;
+   display: block;
+}
+
+   .ann-tree-textarea:disabled {
+      background-color: #f3f3f3;
+      cursor: not-allowed;
+   }
+
+.ann-tree-controls, .ann-tree-date {
+   font-size: 0;
+}
+
+   .ann-tree-controls button {
+      height: 44px;
+      font-size: 14px;
+      background-color: #d7e6eb;
+      color: #5a667e;
+      display: inline-block;
+      width: calc(((100% - (20px * 2) - 1px) / 3));
+      margin: 20px 0 0 20px;
+   }
+
+      .ann-tree-controls button:first-child {
+         margin-left: 0;
+      }
+
+      .ann-tree-controls button:disabled {
+         cursor: not-allowed;
+         background-color: #eee;
+      }
+
+   .ann-tree-date input {
+      font-size: 14px;
+      width: calc(((100% - (20px * 2) - 1px) / 3));
+      margin: 20px 0 0 20px;
+   }
+
+      .ann-tree-date input:first-child {
+         margin-left: 0;
+      }
+
+.ann-tree-view {
+   padding: 10px;
+   border: 2px solid #d7e6eb;
+   border-radius: 3px;
+   margin: 20px 0 0 0;
+}
+
+/*/////////// Dialog Annotations Review Tree Nodes ///////////*/
+
+.tree-node .tree-indicator {
+   float: left;
+   padding: 0 7px;
+   font-size: 24px;
+   line-height: 20px;
+   width: 30px;
+   text-align: center;
+   cursor: pointer;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
+.tree-node .tree-children {
+   padding-left: 20px;
+}
+
+.tree-header {
+   background-color: whitesmoke;
+   border-radius: 3px;
+   margin: 10px 0 0 0;
+}
+
+.ann-tree-view > div > .tree-node:first-child > .tree-header {
+   margin: 0;
+}
+
+.tree-header.selected {
+   background-color: #d7e6eb;
+}
+
+.align-checkboxes label.input-label {
+   margin-bottom: 20px;
+}

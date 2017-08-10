@@ -1,0 +1,179 @@
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+   <title>Demo</title> 
+   <meta http-equiv="X-UA-Compatible" content="IE=9" /> 
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" /> 
+<style> #imageViewerDiv { border: 1px solid #000000; width: 400px; height: 400px; background-color: #7F7F7F; } </style> 
+<!--<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>-->
+<script type="text/javascript" src="Scripts/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="Scripts/Leadtools.js"></script>
+<script type="text/javascript" src="Scripts/Leadtools.Controls.js"></script>
+<script type="text/javascript" src="Scripts/Leadtools.Annotations.Core.js"></script> 
+<script type="text/javascript" src="Scripts/Leadtools.Annotations.Automation.js"></script> 
+<script type="text/javascript" src="Scripts/Leadtools.Annotations.Designers.js"></script> 
+<script type="text/javascript" src="Scripts/Leadtools.Annotations.Rendering.JavaScript.js"></script> 
+<script type="text/javascript" src="Scripts/Leadtools.Annotations.JavaScript.js"></script>
+<!-- <script type="text/javascript" src="Scripts/Leadtools.Demo.js"></script> -->
+<script type="text/javascript" src="demo.js"></script>
+
+
+
+</head>
+<body onload="onLoad1()">
+<div id="imageViewerDiv" style="width: 400px; height: 400px; background-color: darkgray"></div>
+<!--<div id="imageViewerDiv"></div>-->
+<!--<div id="thumbnailsDiv" style="float: left; width: 200px; height: 600px; background-color: gray"></div>-->
+<!--<div id="documentViewerDiv" style="float: left; width: 600px; height: 600px;"></div>-->
+<div>
+   <label for="currentObject">Annotation Object:</label>
+   <select id="currentObject"></select>
+   <label for="userMode">User mode:</label>
+   <select id="userMode">
+      <option>Design</option>
+      <option>Run</option>
+   </select>
+</div>
+</body>
+<script>
+   window.onload = function () {
+      // Get the container DIV
+      var imageViewerDiv = document.getElementById("imageViewerDiv");
+      // Create the image viewer inside it
+      var createOptions = new lt.Controls.ImageViewerCreateOptions(imageViewerDiv);
+      var imageViewer = new lt.Controls.ImageViewer(createOptions);
+      // Add handler to show an alert on errors
+      imageViewer.itemError.add(function (sender, e) {
+         alert("Error loading " + e.data.srcElement.src);
+      });
+      imageViewer.imageUrl = "image/101.jpg";
+
+      // Create and set up the automation manager using the HTML5 rendering engine
+      var renderingEngine = new lt.Annotations.Rendering.AnnHtml5RenderingEngine();
+      var manager = new lt.Annotations.Automation.AnnAutomationManager.create(renderingEngine);
+
+      // Create the default annotations objects
+      manager.createDefaultObjects();
+
+      var currentObject = document.getElementById("currentObject");
+
+      var automationObjCount = manager.objects.count;
+      for (var i = 0; i < automationObjCount; i++) {
+         // Get the object
+         var automationObj = manager.objects.item(i);
+
+         // Add its name to the select element
+         var name = automationObj.name;
+         var id = automationObj.id;
+         currentObject.options[currentObject.options.length] = new Option(name, id);
+      }
+
+      // Hook to its change event
+      currentObject.addEventListener("change", function () {
+         // Get the object ID
+         var id = parseInt(currentObject.options[currentObject.selectedIndex].value);
+
+         // Set it as the current object in the manager
+         manager.currentObjectId = id;
+      });
+
+      // When the current object ID changes, we need to update our select
+      manager.currentObjectIdChanged.add(function (sender, e) {
+         var currentObjectId = manager.currentObjectId;
+         for (var i = 0; i < currentObject.options.length; i++) {
+            var id = parseInt(currentObject.options[i].value);
+            if (id === currentObjectId) {
+               currentObject.selectedIndex = i;
+               break;
+            }
+         }
+      });
+
+      var userMode = document.getElementById("userMode");
+      // Hook to its change event
+      userMode.addEventListener("change", function () {
+         // Get the selected mode
+         var mode = userMode.options[userMode.selectedIndex].innerHTML;
+         if (mode == "Design") {
+            manager.userMode = lt.Annotations.Core.AnnUserMode.design;
+         } else {
+            manager.userMode = lt.Annotations.Core.AnnUserMode.run;
+         }
+      });
+
+      // Create an instance of the Automation control object that works with LEADTOOLS ImageViewer
+      var automationControl = new lt.Annotations.JavaScript.ImageViewerAutomationControl();
+      // Attach our image viewer
+      automationControl.imageViewer = imageViewer;
+
+      // Set the image viewer interactive mode
+      var automationInteractiveMode = new lt.Annotations.JavaScript.AutomationInteractiveMode();
+      automationInteractiveMode.automationControl = automationControl;
+      imageViewer.defaultInteractiveMode = automationInteractiveMode;
+
+      // set up the automation (will create the container as well)
+      var automation = new lt.Annotations.Automation.AnnAutomation(manager, automationControl);
+      // Add handler to update the container size when the image size changes
+      imageViewer.itemChanged.add(function (sender, e) {
+         var container = automation.container;
+         container.size = container.mapper.sizeToContainerCoordinates(imageViewer.imageSize);
+      });
+
+      // set up this automation as the active one
+      automation.active = true;
+
+      // Hook to the run even so we know when an object enters run mode
+      automation.run.add(function (sender, e) {
+         // e is of type AnnRunDesignerEventArgs
+         if (e.operationStatus == lt.Annotations.Core.AnnDesignerOperationStatus.start) {
+            // Get the object being run
+            alert("In run mode, you clicked an object of id " + e.object.id);
+         }
+      });
+
+      // Optional: Add the resources to the container
+      addResources(automation.container);
+   }
+
+   function addResources(container) {
+      // Add images for the stamp, point, hot spot, and lock annotations
+      var resources = new lt.Annotations.Core.AnnResources();
+      container.resources = resources;
+      var rubberStampsResources = resources.rubberStamps;
+      var imagesResources = resources.images;
+
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampApproved] = new lt.Annotations.Core.AnnPicture("image/ann-about.svgg");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampAssigned] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Assigned.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampClient] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Client.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampChecked] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/checked.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampCopy] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Copy.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampDraft] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Draft.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampExtended] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Extended.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampFax] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Fax.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampFaxed] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Faxed.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampImportant] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Important.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampInvoice] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Invoice.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampNotice] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Notice.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampPaid] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Paid.png");
+
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampOfficial] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Official.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampOnFile] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Onfile.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampPassed] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Passed.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampPending] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Pending.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampProcessed] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Processed.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampReceived] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Received.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampRejected] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/rejected.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampRelease] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Release.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampSent] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Sent.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampShipped] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/Shipped.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampTopSecret] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/topsecret.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampUrgent] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/urgent.png");
+      rubberStampsResources[lt.Annotations.Core.AnnRubberStampType.stampVoid] = new lt.Annotations.Core.AnnPicture("resources/objects/RubberStamps/void.png");
+
+      imagesResources.add(new lt.Annotations.Core.AnnPicture("resources/objects/Point.png"));
+      imagesResources.add(new lt.Annotations.Core.AnnPicture("resources/objects/lock.png"));
+      imagesResources.add(new lt.Annotations.Core.AnnPicture("resources/objects/hotspot.png"));
+   }
+</script>
+</html>

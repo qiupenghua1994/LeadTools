@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+   <title>Annotations Demo | LEADTOOLS</title>
+
+   <meta charset="utf-8" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+   <meta name="apple-mobile-web-app-capable" content="yes" />
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+   <link rel="shortcut icon" type="image/x-icon" href="Resources/Images/favicon.ico" />
+
+   <link rel="stylesheet" href="Resources/Styles/bootstrap/custom-bootstrap.min.css" />
+   <link rel="stylesheet" href="Resources/Styles/common-basic.css" />
+   <link rel="stylesheet" href="Resources/Styles/lt-notify.css" />
+   <link rel="stylesheet" href="Resources/Styles/annotations.css" />
+   <link rel="stylesheet" href="Resources/Styles/annotations-dialogs.css" />
+   <link rel="stylesheet" href="Resources/Styles/icons-annotations.css" />
+   <link rel="stylesheet" href="App/AnnRichTextObject/jquery-te-1.4.0.css">
+
+   <script type="text/javascript">
+      // check if HTML5 canvas is supported
+      if (!("HTMLCanvasElement" in window)) {
+         alert("HTML5 is not supported on this page; redirecting...");
+         location.href = "Resources/NoHTML5Support.html";
+      }
+   </script>
+
+   <!-- In production, consider combining resources for greater performance.-->
+   <!-- External .js files -->
+   <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+   <!-- Leadtools .js files -->
+   <script src="Common/Leadtools.js"></script>
+   <script src="Common/Leadtools.Controls.js"></script>
+
+   <!-- Common Demo .js files -->
+   <script src="Common/Leadtools.Demos.js"></script>
+   <script src="Common/Leadtools.Demos.Basic.js"></script>
+
+   <!-- Leadtools Annotation .js files -->
+   <script src="Common/Leadtools.Annotations.Core.js"></script>
+   <script src="Common/Leadtools.Annotations.Rendering.JavaScript.js"></script>
+   <script src="Common/Leadtools.Annotations.Designers.js"></script>
+   <script src="Common/Leadtools.Annotations.Automation.js"></script>
+   <script src="Common/Leadtools.Annotations.UserMedicalPack.js"></script>
+   <script src="Common/Leadtools.Annotations.Documents.js"></script>
+   <script src="Common/Leadtools.Demos.Annotations.js"></script>
+
+   <!-- Annotations .js fies -->
+   <script src="App/AnnCustomObject/AnnTriangleDesigner.js"></script>
+   <script src="App/AnnCustomObject/AnnTriangleObject.js"></script>
+   <script src="App/AnnCustomObject/AnnTriangleRenderer.js"></script>
+   <script src="App/AnnRichTextObject/AnnRichTextDesigner.js"></script>
+   <script src="App/AnnRichTextObject/AnnRichTextObject.js"></script>
+   <script src="App/AnnRichTextObject/AnnRichTextRenderer.js"></script>
+   <script src="App/AnnRichTextObject/jquery-te-1.4.0.js"></script>
+   <script src="App/AnnotationLoadSaveHelper.js"></script>
+   <script src="App/AnnotationsDemo.js"></script>
+
+</head>
+<body>
+   <div class="nav-vertical no-select">
+      <div class="nav-vertical-content">
+         <div class="nav-logo"><img src="Resources/Images/annotations-demo.svg"></div>
+         <section>
+            <h3 class="ann-heading">Tools</h3>
+            <div class="icons icons-6">
+               <div>
+                  <button id="openFile" title="Open File" class="icon icon-ann-file-open"></button>
+                  <button id="saveImage" title="Save Image" class="icon icon-ann-file-save"></button>
+                  <button id="loadAnnotations" title="Load Annotations" class="icon icon-ann-file-open-ann"></button>
+                  <button id="saveAnnotations" title="Save Annotations" class="icon icon-ann-file-save-xml"></button>
+                  <button id="burnAnnotations" title="Burn Annotations" class="icon icon-ann-burn"></button>
+                  <button id="undo" title="Undo" class="icon icon-ann-edit-undo"></button>
+               </div>
+               <div>
+                  <button id="loadBatesStamp" title="Load Bates Stamp" class="icon icon-ann-bates"></button>
+                  <button id="deleteAnnotation" title="Delete Annotation" class="icon icon-ann-delete"></button>
+                  <button id="duplicate" title="Duplicate" class="icon icon-ann-duplicate"></button>
+                  <button id="runUserMode" title="User Mode : Run" class="icon icon-ann-state-run"></button>
+                  <button id="designUserMode" title="User Mode : Design" class="icon icon-ann-state-stop"></button>
+                  <button id="redo" title="Redo" class="icon icon-ann-edit-redo"></button>
+               </div>
+               <div>
+                  <button id="lockObject" title="Lock Object" class="icon icon-ann-lock"></button>
+                  <button id="unlockObject" title="Unlock Object" class="icon icon-ann-lock-undo"></button>
+                  <button id="applyEncryptor" title="Apply Encryptor" disabled class="icon icon-ann-encrypt"></button>
+                  <button id="applyDecryptor" title="Apply Decryptor" disabled class="icon icon-ann-decrypt"></button>
+                  <button id="realizeRedact" title="Redaction Realize" disabled class="icon icon-ann-redact"></button>
+                  <button id="restoreRedact" title="Redaction Restore" disabled class="icon icon-ann-redact-remove"></button>
+               </div>
+            </div>
+            <div class="icons icons-5 icons-separator">
+               <button id="panZoom" class="icon icon-ann icon-ann-mode-panzoom" title="Pan/Zoom" value="0"></button>
+               <button class="checked icon icon-ann icon-ann-mode-select" title="Select" value="-1"></button>
+               <button id="objectsAlignmentOptions" title="Objects Alignment Options" class="icon icon-ann-align"></button>
+               <button id="annotationsProperties" title="Annotations Properties" class="icon icon-ann-properties"></button>
+               <button id="about" title="About" class="icon icon-ann-about"></button>
+            </div>
+         </section>
+      </div>
+      <div class="nav-vertical-footer bottom-logo">
+      </div>
+   </div>
+   <div class="vertical-design-viewer">
+      <div id="imageViewerDiv"></div>
+   </div>
+   <div class="nav-vertical nav-vertical-right">
+      <section class="no-select">
+         <h3 class="ann-heading">Shapes</h3>
+         <div class="icons icons-7">
+            <div>
+               <button title="Line" value="-2" class="icon icon-ann icon-ann-shape-line"></button>
+               <button title="Rectangle" value="-3" class="icon icon-ann icon-ann-shape-rectangle"></button>
+               <button title="Ellipse" value="-4" class="icon icon-ann icon-ann-shape-ellipse"></button>
+               <button title="Polyline" value="-5" class="icon icon-ann icon-ann-shape-polyline"></button>
+               <button title="Polygon" value="-6" class="icon icon-ann icon-ann-shape-polygon"></button>
+               <button title="Curve" value="-7" class="icon icon-ann icon-ann-shape-curve"></button>
+               <button title="Closed Curve" value="-8" class="icon icon-ann icon-ann-shape-b-spline"></button>
+            </div>
+            <div>
+               <button title="Freehand" value="-10" class="icon icon-ann icon-ann-ob-freehand"></button>
+               <button title="Pointer" value="-9" class="icon icon-ann icon-ann-ob-pointer"></button>
+               <button title="Hilite" value="-11" class="icon icon-ann icon-ann-ob-hilite"></button>
+               <button title="Text" value="-12" class="icon icon-ann icon-ann-ob-text"></button>
+               <button title="Text Pointer" value="-14" class="icon icon-ann icon-ann-ob-text-pointer"></button>
+               <button title="Text Rollup" value="-13" class="icon icon-ann icon-ann-ob-pin"></button>
+               <button title="Note" value="-15" class="icon icon-ann icon-ann-ob-note"></button>
+            </div>
+            <div>
+               <button title="Stamp" value="-16" class="icon icon-ann icon-ann-ob-stamp"></button>
+               <button title="Rubber Stamp" value="-17" class="icon icon-ann icon-ann-ob-rubberstamp"></button>
+               <button title="Hotspot" value="-18" class="icon icon-ann icon-ann-ob-hotspot"></button>
+               <button title="Freehand Hotspot" value="-19" class="icon icon-ann icon-ann-ob-hotspot-freehand"></button>
+               <button title="Point" value="-21" class="icon icon-ann icon-ann-ob-point"></button>
+               <button title="Ruler" value="-23" class="icon icon-ann icon-ann-ob-ruler"></button>
+               <button title="Poly Ruler" value="-24" class="icon icon-ann icon-ann-ob-polyruler"></button>
+            </div>
+            <div>
+               <button title="Protractor" value="-25" class="icon icon-ann icon-ann-ob-protractor"></button>
+               <button title="Cross Product" value="-26" class="icon icon-ann icon-ann-ob-cross-product"></button>
+               <button title="Redaction" value="-22" class="icon icon-ann icon-ann-ob-redaction"></button>
+               <button title="Encrypt" value="-27" class="icon icon-ann icon-ann-lock"></button>
+               <button title="Audio" value="-28" class="icon icon-ann icon-ann-ob-audio"></button>
+               <button title="Video" value="-30" class="icon icon-ann icon-ann-ob-video"></button>
+            </div>
+         </div>
+         <div class="icons icons-4 icons-separator">
+            <button title="Triangle" value="-99" class="icon icon-ann icon-ann-ob-custom-triangle"></button>
+            <button title="Rich Text" value="-200" class="icon icon-ann icon-ann-ob-custom-rich-text"></button>
+            <button id="documentAnnotations" title="Document Pack Dialog" class="icon icon-ann-dialog-document"></button>
+            <button id="medicalAnnotations" title="Medical Pack Dialog" class="icon icon-ann-dialog-medical"></button>
+         </div>
+      </section>
+      <div id="notificationRoot">
+         <!-- Notifications will appear here -->
+      </div>
+   </div>
+   <div>
+      <!-- Dialogs -->
+      <!-- Open File dialog -->
+      <div id="openFileDialog" class="dlg-container container">
+         <div class="dlg-box">
+            <a href="#"><span class="dlg-close-x"></span></a>
+            <header>
+               <h1>Open File</h1>
+            </header>
+            <div class="dlg-body dlg-field-expand">
+               <div class="dropdown dlg-bottom-push">
+                  <select id="fileSelect" class="dropdown-button">
+                     <option selected="selected">OCR1 @300 DPI</option>
+                     <option>PNG Image</option>
+                  </select>
+                  <span class="dropdown-indicator"></span>
+               </div>
+               <div id="urlDiv">
+                  <input id="fileUrl" type="text" value="http://demo.leadtools.com/images/pdf/leadtools.pdf" />
+                  <div class="row">
+                     <div class="col-xs col-sm-5 col-sm-offset-7 dlg-bottom-push">
+                        <button class="dlg-apply" id="goBtn">Go</button>
+                        <button class="dlg-close">Close</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- About dialog -->
+      <div id="aboutDialog" class="dlg-container container">
+         <div class="dlg-box">
+            <header>
+               <h1>About</h1>
+            </header>
+            <div class="dlg-body dlg-heading-spaced">
+               <div class="text-center dlg-bottom-push">
+                  <h3 id="demoName">Leadtools JavaScript Demos</h3>
+                  <h4>Copyright © 1991-2017 All Rights Reserved.</h4>
+                  <h4>LEAD Technologies, Inc.</h4>
+               </div>
+               <div class="row dlg-bottom-push">
+                  <div class="col-xs-12 inline-center">
+                     <img src="Resources/Images/leadtools-color.svg" alt="LEADTOOLS" />
+                  </div>
+               </div>
+               <div class="row dlg-bottom-push">
+                  <div class="col-xs-12">
+                     <button class="dlg-close fill-row">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Loading dialog -->
+      <div id="loadingDialog" class="dlg-container container dlg-speedy">
+         <div class="dlg-box">
+            <header>
+               <h1>Loading</h1>
+            </header>
+            <div class="dlg-body">
+               <div class="row dlg-bottom-push">
+                  <div class="col-xs text-center">
+                     <img src="Resources/Images/loading-diamond.gif" class="dlg-loading-action" alt="loading..." />
+                     <label id="processText"></label>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!--  Automation update object dialog -->
+      <div id="automationUpdateObjectDialog" class="dlg-container container">
+         <div class="dlg-box">
+            <a href="#"><span class="dlg-close-x"></span></a>
+            <header>
+               <h1>Annotations Properties</h1>
+            </header>
+            <div class="dlg-body">
+               <div id="auoDlg_Body">
+                  <ul class="dlg-tabs">
+                     <li id="auoDlg_propertiesTab">Properties</li>
+                     <li id="auoDlg_contentTab">Content</li>
+                     <li id="auoDlg_reviewsTab">Reviews</li>
+                  </ul>
+                  <div class="dlg-tabview">
+                     <div id="auoDlg_propertiesPage"></div>
+                     <div id="auoDlg_contentPage">
+                        <div class="content-textarea-holder">
+                           <textarea id="contentTextArea" class="content-textarea" rows="7"></textarea>
+                        </div>
+                     </div>
+                     <div id="auoDlg_reviewsPage"></div>
+                  </div>
+               </div>
+               <div class="row dlg-bottom-push dlg-top-push">
+                  <div class="col-xs-12">
+                     <button class="dlg-close fill-row">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!--  Automation password dialog -->
+      <div id="automationPasswordDialog" class="dlg-container container">
+         <div class="dlg-box">
+            <a href="#"><span class="dlg-close-x"></span></a>
+            <header>
+               <h1 id="passwordDialogName"></h1>
+            </header>
+            <div class="dlg-body">
+               <input id="objectPassword" type="password" class="input-full" placeholder="Password" />
+               <div class="row dlg-bottom-push">
+                  <div class="col-xs-12 col-sm-5 col-sm-offset-7">
+                     <button class="dlg-apply" id="automationPasswordDlg_Action">OK</button>
+                     <button class="dlg-close">Cancel</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!--  Media Player dialog -->
+      <div id="mediaPlayerDialog" class="dlg-container container">
+         <div class="dlg-box">
+            <a href="#"><span class="dlg-close-x"></span></a>
+            <header>
+               <h1>Media Player</h1>
+            </header>
+            <div class="dlg-body">
+               <video id="videoObject" class="ann-media" controls="controls"></video>
+               <div class="row dlg-bottom-push">
+                  <div class="col-xs-12">
+                     <button id="mediaPlayerDlg_OK" class="dlg-close fill-row">Exit</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!--  Audio Player dialog -->
+      <div id="audioPlayerDialog" class="dlg-container container">
+         <div class="dlg-box">
+            <a href="#"><span class="dlg-close-x"></span></a>
+            <header>
+               <h1>Audio Player</h1>
+            </header>
+            <div class="dlg-body">
+               <audio id="audioObject" class="ann-media" controls></audio>
+               <div class="row dlg-bottom-push">
+                  <div class="col-xs-12">
+                     <button id="audioPlayerDlg_OK" class="dlg-close fill-row">Exit</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Document Pack dialog -->
+      <div id="documentPackDialog" class="dlg-container container">
+         <div class="dlg-box">
+            <a href="#"><span class="dlg-close-x"></span></a>
+            <header>
+               <h1>Document Pack</h1>
+            </header>
+            <div class="dlg-body ann-dlg-pack-squares">
+               <div class="row">
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-document-text-hilite" title="Text Hilite" value="-33">Text Hilite</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-document-text-strike" title="Text Strikeout" value="-34">Text Strikeout</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-document-text-underline" title="Text Underline" value="-35">Text Underline</button>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-document-text-redact" title="Text Redaction" value="-36">Text Redaction</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-document-sticky-note" title="Sticky Note" value="-32">Sticky Note</button>
+                  </div>
+               </div>
+               <div class="row dlg-bottom-push">
+                  <div class="col-xs-12">
+                     <button id="documentPackDlg_Cancel" class="dlg-close fill-row">Cancel</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Medical Pack dialog -->
+      <div id="medicalPackDialog" class="dlg-container container">
+         <div class="dlg-box">
+            <a href="#"><span class="dlg-close-x"></span></a>
+            <header>
+               <h1>Medical Pack</h1>
+            </header>
+            <div class="dlg-body ann-dlg-pack-squares">
+               <div class="row">
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-medical-two-parallel" title="Two Parallel Lines" value="-1001">Two Parallel Lines</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-medical-four-parallel" title="Four Parallel Lines" value="-1002">Four Parallel Lines</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-medical-mid-lines" title="Mid Lines" value="-1004">Mid Lines</button>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-medical-snap-line" title="Snap Line" value="-1005">Snap Line</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-medical-intersection-lines" title="Intersection Lines" value="-1006">Intersection Lines</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-medical-cobb" title="Cobb Angle" value="-1007">Cobb Angle</button>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-xs-4">
+                     <button class="icon icon-ann ann-icon-medical-norberg" title="Norberg" value="-1008">Norberg</button>
+                  </div>
+               </div>
+               <div class="row dlg-bottom-push">
+                  <div class="col-xs-12">
+                     <button id="medicalPackDlg_Cancel" class="dlg-close fill-row">Cancel</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Rich Text Editor dialog -->
+      <div id="richTextEditorDialog" class="dlg-container container">
+         <div class="dlg-box">
+            <a href="#"><span class="dlg-close-x"></span></a>
+            <header>
+               <h1>Rich Text Editor</h1>
+            </header>
+            <div class="dlg-body">
+               <textarea id="richTextEditor" class="rich-text-textarea"></textarea>
+               <div class="row dlg-bottom-push">
+                  <div class="col-xs-12">
+                     <button class="dlg-close fill-row">Done</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Snap To Grid Properties dialog -->
+      <div id="snapToGridPropertiesDialog" class="dlg-container container">
+         <div class="dlg-box">
+            <a href="#"><span class="dlg-close-x"></span></a>
+            <header>
+               <h1>Snap To Grid Properties</h1>
+            </header>
+            <div class="dlg-body align-checkboxes">
+               <div class="row">
+                  <div class="col-xs-12">
+                     <label for="snapToGridPropertiesShowGridInput" class="input-label">Show Grid</label>
+                     <input type="checkbox" id="snapToGridPropertiesShowGridInput" class="custom-check" />
+                     <label for="snapToGridPropertiesShowGridInput" class="custom-check"></label>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-xs-12 dlg-bottom-push">
+                     <div class="dropdown" title="Grid Color">
+                        <select id="snapToGridPropertiesGridColorSelect" class="dropdown-button">
+                           <option disabled value="Grid Color">Grid Color</option>
+                           <option value="Black">Black</option>
+                           <option value="Blue">Blue</option>
+                           <option value="Gray">Gray</option>
+                           <option value="Green">Green</option>
+                           <option value="Red">Red</option>
+                           <option value="White">White</option>
+                           <option value="Yellow">Yellow</option>
+                        </select>
+                        <span class="dropdown-indicator"></span>
+                     </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-xs-12 dlg-bottom-push">
+                     <div class="dropdown" title="Line Style">
+                        <select id="snapToGridPropertiesLineStyleSelect" class="dropdown-button">
+                           <option disabled value="Line Style">Line Style</option>
+                           <option value="Solid">Solid</option>
+                           <option value="Dash">Dash</option>
+                        </select>
+                        <span class="dropdown-indicator"></span>
+                     </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-xs-6">
+                     <label class="input-label" for="snapToGridPropertiesGridLengthInput">Grid Length (5 to 999)</label>
+                     <input class="input-full" id="snapToGridPropertiesGridLengthInput" type="number" min="5" max="999">
+                  </div>
+                  <div class="col-xs-6">
+                     <label class="input-label" for="snapToGridPropertiesLineSpacingInput">Line Spacing (1 to 1000)</label>
+                     <input class="input-full" id="snapToGridPropertiesLineSpacingInput" type="number" min="1" max="1000">
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-xs-12">
+                     <label for="snapToGridPropertiesEnableSnapInput" class="input-label">Enable Snap</label>
+                     <input type="checkbox" id="snapToGridPropertiesEnableSnapInput" class="custom-check" />
+                     <label for="snapToGridPropertiesEnableSnapInput" class="custom-check"></label>
+                  </div>
+               </div>
+               <div class="row dlg-bottom-push">
+                  <div class="col-xs-12">
+                     <button id="snapToGridPropertiesOkBtn" class="dlg-apply fill-row">Apply</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Objects Alignment Options -->
+      <div id="objectsAlignmentDialog" class="dlg-container container">
+         <div class="dlg-box">
+            <a href="#"><span class="dlg-close-x"></span></a>
+            <header>
+               <h1>Objects Alignment</h1>
+            </header>
+            <div class="dlg-body ann-dlg-pack-squares">
+               <div class="row">
+                  <div class="col-xs-12 align-left">
+                     <label for="objectsAlignmentDialogEnableCheckBox" class="input-label">Enable Objects Alignment</label>
+                     <input type="checkbox" id="objectsAlignmentDialogEnableCheckBox" class="custom-check" />
+                     <label for="objectsAlignmentDialogEnableCheckBox" class="custom-check"></label>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-xs-4">
+                     <button class="icon icon-object icon-object-align-left" title="Align To Left" value="-1">Align To Left</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-object icon-object-align-center" title="Align To Center" value="-2">Align To Center</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-object icon-object-align-right" title="Align To Right" value="-3">Align To Right</button>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-xs-4">
+                     <button class="icon icon-object icon-object-align-top" title="Align To Top" value="-4">Align To Top</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-object icon-object-align-middle" title="Align To Middle" value="-5">Align To Middle</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-object icon-object-align-bottom" title="Align To Bottom" value="-6">Align To Bottom</button>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-xs-4">
+                     <button class="icon icon-object icon-object-same-width" title="Make Same Width" value="-7">Make Same Width</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-object icon-object-same-height" title="Make Same Height" value="-8">Make Same Height</button>
+                  </div>
+                  <div class="col-xs-4">
+                     <button class="icon icon-object icon-object-same-size" title="Make Same Size" value="-9">Make Same Size</button>
+                  </div>
+               </div>
+               <br />
+               <div class="row dlg-bottom-push">
+                  <div class="col-xs-12">
+                     <button id="objectsAlignmentDialogOkBtn" class="dlg-close fill-row">Cancel</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</body>
+</html>
