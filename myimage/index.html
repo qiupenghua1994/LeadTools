@@ -4,8 +4,11 @@
    <title>Demo</title> 
    <meta http-equiv="X-UA-Compatible" content="IE=9" /> 
    <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
-   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" /> 
-<style> #imageViewerDiv { border: 1px solid #000000; width: 400px; height: 400px; background-color: #7F7F7F; } </style> 
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+
+   <link rel="stylesheet" href="style/bootstrap.css" />
+   <link rel="stylesheet" href="style/bootstrap-theme.css"/>
+<style> #imageViewerDiv { border: 1px solid #000000; width: 400px; height: 400px; background-color: #7F7F7F; } </style>
 <!--<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>-->
 <script type="text/javascript" src="Scripts/jquery-2.2.4.min.js"></script>
 <script type="text/javascript" src="Scripts/Leadtools.js"></script>
@@ -23,14 +26,26 @@
 
 </head>
 <body onload="pageLoad()">
-<div id="imageViewerDiv" style="width: 600px; height: 600px; background-color: darkgray;float: left"></div>
+<div class="col-sm-6">
+   <div id="imageViewerDiv" style="width: 100%; height: 600px; background-color: darkgray;"></div>
+</div>
 <!--<div id="imageViewerDiv"></div>-->
 <!--<div id="thumbnailsDiv" style="float: left; width: 200px; height: 600px; background-color: gray"></div>-->
 <!--<div id="documentViewerDiv" style="float: left; width: 600px; height: 600px;"></div>-->
-<div style="float:left;">
-   <button onclick="addOne()">三角形</button>
-   <button>正方形</button>
-   <button>线</button>
+<div class="col-sm-6">
+   <div class="col-sm-3">
+      <form id="form1">
+         <span>长：</span><input class="form-control" type="number" name="long"/>
+         <span>宽：</span><input class="form-control" type="number" name="wide"/>
+         <span>X坐标：</span><input class="form-control" type="number" name="x"/>
+         <span>Y坐标：</span><input class="form-control" type="number" name="y"/>
+         <button class="btn btn-default" type="button" onclick="addOne()">正方形</button>
+      </form>
+
+   </div>
+
+   <button class="btn btn-default">正方形</button>
+   <button class="btn btn-default">线</button>
 </div>
 </body>
 </html>

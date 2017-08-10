@@ -207,7 +207,9 @@ var num =3;
 		//创建注释自动化对象并将其设置为活跃
 		this._automation = new lt.Annotations.Automation.AnnAutomation(this._manager, _imageViewerAutomationControl);
 		this._automation.set_active(true);
-
+		this._automation.add_selectedObjectsChanged(function (resp) {
+			console.log(num++)
+		});
 		newTriangle();
 
 	}
@@ -228,8 +230,13 @@ var num =3;
 	}
 
 
-	function addOne(){
+	function addOne(data){
+		debugger
 
+		var long = $("[name='long']").val();
+		var wide = $("[name='wide']").val();
+		var x = $("[name='x']").val();
+		var y = $("[name='y']").val();
 			// assumes _automation is valid
 			var inch = 720.0;
 			// Add a freehand hotspot object
@@ -250,10 +257,9 @@ var num =3;
 			// Add the object to the automation container
 			this._automation.get_container().get_children().add(polyLineObj);
 			// Select the object
-			this._automation.selectObject(polyLineObj);
-		this._automation.add_selectedObjectsChanged(function (resp) {
-			console.log(num++)
-		})
+			//this._automation.selectObject(polyLineObj);
+			//lt.Annotations.Core.AnnDesignerOperationStatus =3;
+			lt.Annotations.Core.AnnUserMode
 
 	}
 
