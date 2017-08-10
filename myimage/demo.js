@@ -164,7 +164,6 @@ var num =3;
 		// Create the viewer
 		var createOptions = new lt.Controls.ImageViewerCreateOptions(document.getElementById('imageViewerDiv'));
 		this._viewer = new lt.Controls.ImageViewer(createOptions);
-debugger
 		// Watch item changed event to set container size and the current object id when the image get loaded
 		_viewer.add_itemChanged(automationControl_ItemChanged);
 		//_viewer.add_itemChanged(automationControl_ItemChanged);
@@ -228,10 +227,34 @@ debugger
 		}
 	}
 
-	//三角形
-	function onTriangle(){
 
-		newTriangle();
+	function addOne(){
+
+			// assumes _automation is valid
+			var inch = 720.0;
+			// Add a freehand hotspot object
+			var polyLineObj = new lt.Annotations.Core.AnnPolylineObject();
+			// Set the points for the freehand hotspot
+			polyLineObj.get_points().add(lt.LeadPointD.create(1 * inch, 1 * inch));
+			polyLineObj.get_points().add(lt.LeadPointD.create(2 * inch, 1 * inch));
+			polyLineObj.get_points().add(lt.LeadPointD.create(2 * inch, 2 * inch));
+			polyLineObj.get_points().add(lt.LeadPointD.create(1 * inch, 2 * inch));
+			//polyLineObj.get_points().add(lt.LeadPointD.create(5 * inch, 5 * inch));
+			//polyLineObj.get_points().add(lt.LeadPointD.create(5 * inch, 1 * inch));
+			// Set the stroke
+			polyLineObj.set_stroke(lt.Annotations.Core.AnnStroke.create(lt.Annotations.Core.AnnSolidColorBrush.create("red"), lt.LeadLengthD.create(3)));
+			// Set the fill
+			polyLineObj.set_fill(lt.Annotations.Core.AnnSolidColorBrush.create("green"));
+			// Set the figure to closed
+			polyLineObj.set_isClosed(true);
+			// Add the object to the automation container
+			this._automation.get_container().get_children().add(polyLineObj);
+			// Select the object
+			this._automation.selectObject(polyLineObj);
+		this._automation.add_selectedObjectsChanged(function (resp) {
+			console.log(num++)
+		})
+
 	}
 
 	function onLoad1(){

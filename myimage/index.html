@@ -15,6 +15,7 @@
 <script type="text/javascript" src="Scripts/Leadtools.Annotations.Designers.js"></script> 
 <script type="text/javascript" src="Scripts/Leadtools.Annotations.Rendering.JavaScript.js"></script> 
 <script type="text/javascript" src="Scripts/Leadtools.Annotations.JavaScript.js"></script>
+<script type="text/javascript" src="Scripts/Leadtools.Annotations.Automation.js"></script>
 <!-- <script type="text/javascript" src="Scripts/Leadtools.Demo.js"></script> -->
 <script type="text/javascript" src="demo.js"></script>
 
@@ -22,12 +23,12 @@
 
 </head>
 <body onload="pageLoad()">
-<div id="imageViewerDiv" style="width: 600px; height: 600px; background-color: darkgray"></div>
+<div id="imageViewerDiv" style="width: 600px; height: 600px; background-color: darkgray;float: left"></div>
 <!--<div id="imageViewerDiv"></div>-->
 <!--<div id="thumbnailsDiv" style="float: left; width: 200px; height: 600px; background-color: gray"></div>-->
 <!--<div id="documentViewerDiv" style="float: left; width: 600px; height: 600px;"></div>-->
-<div>
-   <button onclick="pageLoad()">三角形</button>
+<div style="float:left;">
+   <button onclick="addOne()">三角形</button>
    <button>正方形</button>
    <button>线</button>
 </div>
